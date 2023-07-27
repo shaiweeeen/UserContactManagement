@@ -1,46 +1,37 @@
-﻿@model IEnumerable<UserContactManagement.Models.Contact>
+﻿@model IEnumerable<UserContactManagement.ViewModels.ContactViewModel>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th> Address</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-                <td>
-                    <p>Delivery Address: @Html.DisplayFor(modelItem => item.DeliveryAddress)</p>
-                    <p> Billing Address: @Html.DisplayFor(modelItem => item.BillingAddress) </p>
-                </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
 }
-    </tbody>
+<div class="row m-4">
+    <div class="col-8 offset-2">
+        <div class="row">
+            <div class="col-10">
+                <h3>Your Contacts</h3>
+            </div>
+            <div class="col-2">
+                <a asp-action="Create" class="btn btn-primary w-100"><i class="fa-solid fa-address-card"></i> New </a>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+<table class="table">
+ 
+        @foreach (var item in Model) {
+                   <tr>
+                    <partial name="_ContactCard" model="item" />
+                   </tr> 
+        
+        }
+    
 </table>

@@ -1,4 +1,4 @@
-﻿@model UserContactManagement.Models.Contact
+﻿@model UserContactManagement.ViewModels.ContactViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -25,6 +25,11 @@
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactNumber" class="control-label"></label>
+                <input asp-for="ContactNumber" class="form-control" />
+                <span asp-validation-for="ContactNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DeliveryAddress" class="control-label"></label>

@@ -1,16 +1,35 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Security.Claims;
 using UserContactManagement.Areas.Identity.Data;
 using UserContactManagement.Models;
+using UserContactManagement.ViewModels;
 
 namespace UserContactManagement.Controllers
 {
     public class ContactsController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<User> _userManager; 
+        private string CurrentUserId
+        {
+            get
+            {
+                return _userManager.GetUserId(User);
+            }
+        }
+        private static readonly Random random = new Random();
+        private static readonly string[] avatarUrls = new string[]
+        {
+            "/images/avatars/1.png",
+            "/images/avatars/2.png",
+            "/images/avatars/3.png",
+            "/images/avatars/4.png",
+            "/images/avatars/5.png"
+        };
 
 
         public ContactsController(AppDbContext context, UserManager<User> userManager)
@@ -18,23 +37,46 @@ namespace UserContactManagement.Controllers
             _context = context;
             _userManager = userManager;
         }
-
+        //get random avatar
+        private string GetRandomAvatarUrl()
+        {
+            int randomNumber = random.Next(avatarUrls.Length);
+            return avatarUrls[randomNumber];
+        }
 
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser != null)
+           
+            var contactViewModel = new ContactViewModel();
+            if (CurrentUserId != null)
             {
                 var associatedContacts = _context.Contacts
-                   .Where(c => c.UserId == currentUser.Id)
+                   .Where(c => c.UserId == CurrentUserId)
                    .ToList();
 
                 if (associatedContacts != null)
-                    return View(associatedContacts);
-                else return View();
+                {
+                    var contactViewModels = associatedContacts.Select(contact => new ContactViewModel
+                    {
+                        Id = contact.Id,
+                        FirstName = contact.FirstName,
+                        LastName = contact.LastName,
+                        ContactNumber =contact.ContactNumber,
+                        DeliveryAddress = contact.DeliveryAddress,
+                        BillingAddress = contact.BillingAddress,
+                        UserId = contact.UserId,
+                        AvatarUrl = contact.AvatarUrl
+                    }).ToList();
+
+                    return View(contactViewModels);
+                }
+                else
+                {
+                    return View();
+                }
             }
-            else return RedirectToAction("Login", "Identity//Account");
+            else return Redirect("/Identity/Account/Login");
 
 
         }
@@ -71,24 +113,36 @@ namespace UserContactManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName, DeliveryAddress, BillingAddress")] Contact contact)
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,ContactNumber, DeliveryAddress,  BillingAddress")] ContactViewModel contact)
         {
 
 
             try
             {
-                User currentUser = await _userManager.GetUserAsync(User);
-                contact.UserId = currentUser.Id;
+                
+                contact.UserId = CurrentUserId;
 
-                // Band-aid: Fix this later! Create ViewModels
-                ModelState.Remove(nameof(Contact.User)); 
-                ModelState.Remove(nameof(Contact.UserId));
+         
 
+                
+                contact.AvatarUrl = GetRandomAvatarUrl();
                 if (ModelState.IsValid)
                 {
-
-                    _context.Add(contact);
+                    Contact newContact = new Contact
+                    {
+                        Id = contact.Id,
+                        FirstName = contact.FirstName,
+                        LastName = contact.LastName,
+                        ContactNumber = contact.ContactNumber,
+                        DeliveryAddress = contact.DeliveryAddress,
+                        BillingAddress = contact.BillingAddress,
+                        UserId = contact.UserId,
+                        AvatarUrl = contact.AvatarUrl
+                        
+                    };
+                    _context.Add(newContact);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Contact added successfully.";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -108,10 +162,23 @@ namespace UserContactManagement.Controllers
         // GET: Contacts/Edit
         public async Task<IActionResult> Edit(int id)
         {
-            var editContact = await _context.Contacts.FindAsync(id);
-            if (editContact != null)
+            var contact = await _context.Contacts.FindAsync(id);
+           
+
+            if (contact != null)
             {
-                return View(editContact);
+                var viewModel = new ContactViewModel
+                {
+                    Id = contact.Id,
+                    FirstName = contact.FirstName,
+                    LastName = contact.LastName,
+                    ContactNumber = contact.ContactNumber,
+                    DeliveryAddress = contact.DeliveryAddress,
+                    BillingAddress = contact.BillingAddress,
+                    UserId = contact.UserId,
+                    AvatarUrl = contact.AvatarUrl
+                };
+                return View(viewModel);
             }
 
             else
@@ -125,7 +192,7 @@ namespace UserContactManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Id,FirstName,LastName,DeliveryAddress,BillingAddress")] Contact contact)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,Id,FirstName,LastName,ContactNumber,DeliveryAddress,BillingAddress")] ContactViewModel contact)
         {
             if (id != contact.Id)
             {
@@ -133,8 +200,9 @@ namespace UserContactManagement.Controllers
             }
             else
             {
+                
                 // Band-aid: Fix this later!
-                ModelState.Remove(nameof(Contact.User));
+               // ModelState.Remove(nameof(Contact.User));
 
                 if (ModelState.IsValid)
                 {
@@ -145,10 +213,13 @@ namespace UserContactManagement.Controllers
                     }
 
                     // Update the properties of the existing contact
+                    existingContact.Id = contact.Id;
                     existingContact.FirstName = contact.FirstName;
                     existingContact.LastName = contact.LastName;
+                    existingContact.ContactNumber = contact.ContactNumber;
                     existingContact.DeliveryAddress = contact.DeliveryAddress;
                     existingContact.BillingAddress = contact.BillingAddress;
+                    
 
                     // Make sure to set the UserId property as well
                     existingContact.UserId = contact.UserId;

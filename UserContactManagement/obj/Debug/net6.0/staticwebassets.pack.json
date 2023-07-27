@@ -185,6 +185,26 @@
       "PackagePath": "staticwebassets\\font-awesome\\webfonts\\fa-v4compatibility.woff2"
     },
     {
+      "Id": "D:\\Shai\\Assessment\\UserContactManagement\\UserContactManagement\\wwwroot\\images\\avatars\\1.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\1.png"
+    },
+    {
+      "Id": "D:\\Shai\\Assessment\\UserContactManagement\\UserContactManagement\\wwwroot\\images\\avatars\\2.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\2.png"
+    },
+    {
+      "Id": "D:\\Shai\\Assessment\\UserContactManagement\\UserContactManagement\\wwwroot\\images\\avatars\\3.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\3.png"
+    },
+    {
+      "Id": "D:\\Shai\\Assessment\\UserContactManagement\\UserContactManagement\\wwwroot\\images\\avatars\\4.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\4.png"
+    },
+    {
+      "Id": "D:\\Shai\\Assessment\\UserContactManagement\\UserContactManagement\\wwwroot\\images\\avatars\\5.png",
+      "PackagePath": "staticwebassets\\images\\avatars\\5.png"
+    },
+    {
       "Id": "D:\\Shai\\Assessment\\UserContactManagement\\UserContactManagement\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
