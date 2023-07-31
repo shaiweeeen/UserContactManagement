@@ -4,47 +4,65 @@
 @{
     ViewData["Title"] = "Log in";
 }
-
 <div class="row">
-    <div class="col-md-4">
+    <div class="mx-auto col-8 col-md-6 col-lg-4">
         <section>
             <form id="account" method="post">
                 <h2 class="text-black-50">Log in</h2>
-                
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-floating mt-4">
+
+                @if (TempData["InvalidLogin"] != null)
+                {
+                <div class="alert alert-danger">
+                    @TempData["InvalidLogin"]
+                </div>
+                }
+                <div class="form-floating mt-4 w-100">
                     <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" />
                     <label asp-for="Input.Username" class="form-label"></label>
                     <span asp-validation-for="Input.Username" class="text-danger"></span>
                 </div>
-                <div class="form-floating mt-2">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                    <label asp-for="Input.Password" class="form-label"></label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div>
-                    <div class="checkbox mt-2">
-                        <label asp-for="Input.RememberMe" class="form-label">
-                            <input class="form-check-input" asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
+                <div class="form-floating input-group mt-2 w-100">
+                    <input asp-for="Input.Password" id="password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    <div class="input-group-text">
+                        <button type="button" class="btn btn-sm" id="togglePasswordBtn">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </button>
                     </div>
+                    <label asp-for="Input.Password" class="form-label"></label>
+                    <span asp-validation-for="Input.Password" class="text-danger w-100"></span>
+                </div>
+               
+                <div>
+                    <button id="login-submit" type="submit" class="w-100 mt-2 mb-2 btn btn-lg btn-primary">Log in</button>
                 </div>
                 <div>
-                    <button id="login-submit" type="submit" class="w-100 mt-4 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                       No account yet?  <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create account</a>
+                    <p class="text-center">
+                        No account yet?  <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create an account</a>
                     </p>
-         
+
                 </div>
             </form>
         </section>
-    </div>
-   
+   </div>
+            
+      
 </div>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        const passwordField = document.getElementById("password");
+        const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+
+        togglePasswordBtn.addEventListener("click", function () {
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                togglePasswordBtn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+            } else {
+                passwordField.type = "password";
+                togglePasswordBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+            }
+        });
+    </script>
 }

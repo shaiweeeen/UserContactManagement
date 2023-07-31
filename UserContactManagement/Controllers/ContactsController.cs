@@ -81,23 +81,7 @@ namespace UserContactManagement.Controllers
 
         }
 
-        // GET: Contacts/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Contacts == null)
-            {
-                return NotFound();
-            }
-
-            var contact = await _context.Contacts
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            return View(contact);
-        }
+       
 
         // GET: Contacts/Create
         public IActionResult Create()
@@ -109,8 +93,6 @@ namespace UserContactManagement.Controllers
 
 
         // POST: Contacts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName,LastName,ContactNumber, DeliveryAddress,  BillingAddress")] ContactViewModel contact)
@@ -221,9 +203,10 @@ namespace UserContactManagement.Controllers
                     existingContact.BillingAddress = contact.BillingAddress;
                     
 
-                    // Make sure to set the UserId property as well
+                   
                     existingContact.UserId = contact.UserId;
 
+                    TempData["SuccessMessage"] = "Contact edited successfully.";
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
 
@@ -248,8 +231,18 @@ namespace UserContactManagement.Controllers
             {
                 return NotFound();
             }
-
-            return View(contact);
+            var viewModel = new ContactViewModel
+            {
+                Id = contact.Id,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                ContactNumber = contact.ContactNumber,
+                DeliveryAddress = contact.DeliveryAddress,
+                BillingAddress = contact.BillingAddress,
+                UserId = contact.UserId,
+                AvatarUrl = contact.AvatarUrl
+            };
+            return View(viewModel);
         }
 
         // POST: Contacts/Delete/5
@@ -268,6 +261,7 @@ namespace UserContactManagement.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Contact deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -87,7 +87,7 @@ namespace UserContactManagement.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
+            public bool RememberMe { get; set; } = false;
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -115,8 +115,8 @@ namespace UserContactManagement.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+               
+
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -134,11 +134,13 @@ namespace UserContactManagement.Areas.Identity.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    TempData["InvalidLogin"] = "username/password is incorrect";
                     return Page();
                 }
             }
 
             // If we got this far, something failed, redisplay form
+            
             return Page();
         }
     }

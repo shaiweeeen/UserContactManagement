@@ -8,51 +8,53 @@
 @{
 }
 <div class="row">
-    <div class="col-8 offset-2">
+
+    <div class="col-md-10 col-lg-8 mx-auto col-sm-10">
 
         <div class="card m-2">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-9">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-9 col-sm-12">
                         <h5>@Model.FirstName @Model.LastName</h5>
-                        </div>
-                        <div class="col-3">
-                        <p class="text-end fst-italic">@Model.ContactNumber</p>
-                        </div>
                     </div>
-                   
+                    <div class="col-md-3 col-sm-12">
+                        <p class="text-end fst-italic">@Model.ContactNumber</p>
+                    </div>
                 </div>
-                <div class="card-body ">
-                    <div class="row">
-                        <div class="col-2">
+
+            </div>
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-md-2 col-sm-4 col-3  m-auto m-sm-auto">
                         <img src="@Model.AvatarUrl" class="w-100" />
-                        </div>
-                        <div class="col-8">
-                        <h6>Address</h6>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                        <h6>Physical Address</h6>
                         <p class="card-text">Delivery Address: @Model.DeliveryAddress</p>
                         <p class="card-text">Billing Address: @Model.BillingAddress</p>
-                        </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-4 offset-8">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a asp-action="Edit" asp-controller="Contacts" asp-route-id="@Model.Id" class="btn btn-outline-primary w-100">Edit</a>
-                                </div>
-                                <div class="col-6">
-                                <a asp-action="Delete" asp-controller="Contacts" asp-route-id="@Model.Id" class="btn btn-outline-danger w-100">Delete</a>
-                                </div>
-                            </div>
-                            
-                        
-                        
-                        </div>
-                    </div>
-                    
                 </div>
+
+                <div class="row">
+                    <div class="col-lg-4  col-md-7 offset-lg-8 offset-md-2 col-sm-12 mt-sm-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <a asp-action="Edit" asp-controller="Contacts" asp-route-id="@Model.Id" class="btn btn-outline-primary w-100">Edit</a>
+                            </div>
+                            <div class="col-6">
+                                <a asp-action="Delete" asp-controller="Contacts" asp-route-id="@Model.Id" class="btn btn-outline-danger w-100">Delete</a>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
             </div>
-       
-        
+        </div>
+
+
+
     </div>
 </div>
